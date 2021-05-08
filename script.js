@@ -9,30 +9,49 @@ function computerPlay() {
 function playRound(playerSelection, computerSelection) {
     playerSelection = playerSelection.toLowerCase();
     computerSelection = computerSelection.toLowerCase();
+    let result = document.querySelector("#result");
 
     if (playerSelection === computerSelection) {
-        return "Tie!";
-    }
-
-    if (playerSelection === "rock" && computerSelection === "paper" ||
+        result.textContent = "Tie!";
+    } else if (playerSelection === "rock" && computerSelection === "paper" ||
         playerSelection === "paper" && computerSelection === "scissor" ||
         playerSelection === "scissor" && computerSelection === "sock") {
-            return `You Lose! ${computerSelection} beats ${playerSelection}`;
+            result.textContent = `You Lose! ${computerSelection} beats ${playerSelection}`;
+            addPoint("Computer");
+    } else {
+        result.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+        addPoint("Player");
     }
+}
 
-    return `You Win! ${playerSelection} beats ${computerSelection}`;
+function announceWinner(winner) {
+    alert(`${winner} is the winner!`);
+}
+
+function resetGame() {
+    document.querySelector("#player-score").textContent = "0";
+    document.querySelector("#computer-score").textContent = "0";
+    document.querySelector("#result").textContent = "";
+}
+
+function addPoint(winner) {
+    let scoreElement = document.querySelector(`#${winner.toLowerCase()}-score`);
+    let score = parseInt(scoreElement.textContent);
+    scoreElement.textContent = (++score).toString();
+
+    if (score === 5) {
+        announceWinner(winner);
+        resetGame();
+    }
 }
 
 function game() {
-    while (true) {
-        let playerSelection = prompt("Enter your choice (type \"stop\" to end the game):");
-
-        if (playerSelection.toLowerCase() === "stop") {
-            return;
-        }
-
-        alert(playRound(playerSelection, computerPlay()));
-    }
+    let choices = document.querySelectorAll(".choice");
+    choices.forEach(choice => {
+        choice.addEventListener("click", () => {
+            playRound(choice.id, computerPlay());
+        });
+    });
 }
 
 game();
